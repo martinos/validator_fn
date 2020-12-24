@@ -2,11 +2,13 @@ PATH
   remote: .
   specs:
     validator_fn (0.1.0)
+      fn_reader
 
 GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.4.4)
+    fn_reader (0.1.0)
     rake (12.3.3)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
