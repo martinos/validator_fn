@@ -1,38 +1,65 @@
 require "validator_fn/version"
 require "fn_reader"
+require "pry-nav"
 
 module ValidatorFn
   class Error < StandardError; end
 
   fn_reader :something, :matches, :either, :array_of, :any, :is_nil,
-    :maybe, :present, :is_a, :int, :hash_of, :invalid, :generate_validator, :handle_error, :error_str
+    :maybe, :present, :is_a, :int, :hash_of, :invalid, :generate_validator, :handle_error, :error_str, :apply
 
-  class Error < StandardError; end
+  class Error < StandardError
+    attr_reader :my_msg
 
+    def initialize(msg)
+      @my_msg = msg
+      super(msg)
+    end
+
+    def message(indent = 0)
+      if cause
+        cause_msg = if cause.kind_of?(Error)
+            cause.message(indent + 1)
+          else
+            cause.message
+          end
+        my_msg + "\n" + ("  " * (indent + 1)) + cause_msg
+      else
+        my_msg
+      end
+    end
+  end
+
+  @@apply = ->fn, a {
+    begin
+      fn.(a)
+    rescue StandardError => e
+      invalid.("Error applying function")
+    end
+  }.curry
   @@invalid = ->msg { raise Error.new(msg) }
   @@something = ->a { invalid.("Cannot be nil") if a.nil?; a }
   @@matches = ->regex, a { invalid.("Should match") unless a =~ regex }.curry
   @@either = ->a, b, value {
     begin
-      a.(value) || a.(value)
+      a.(value)
     rescue Error => e
+      b.(value)
     end
-    a
+    value
   }.curry
   @@array_of = ->fn, array {
     is_a.(Array).(array)
-    array.each_with_index do |a, idx|
+    array.each_with_index.map do |a, idx|
       fn.(a)
     rescue Error => e
       invalid.("Invalid value in Array at index #{idx}")
     end
-    array
   }.curry
   @@any = ->a { a }
   @@is_nil = ->a { invalid.("Should be nil") unless a.nil?; a }
   @@maybe = either.(is_nil)
   @@is_a = ->klass, a { invalid.("Expected type #{klass}, got #{a.inspect}") unless a.is_a?(klass); a }.curry
-  @@int = ->a { invalid.("#{a.inspect} is not a valid integer") unless a.is_a?(Integer) }
   @@hash_of = ->fields, hash {
     hash ||= {}
     fields.map do |(key, fn)|
