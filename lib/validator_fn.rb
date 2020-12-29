@@ -1,6 +1,5 @@
 require "validator_fn/version"
 require "fn_reader"
-require "pry-nav"
 
 module ValidatorFn
   class Error < StandardError; end
