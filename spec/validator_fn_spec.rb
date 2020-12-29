@@ -27,6 +27,7 @@ RSpec.describe ValidatorFn do
       expect(hash_of.(age: (is_a.(Integer))).(age: 12)).to eq({ age: 12 })
       # We should be able to apply a transformation on the value
       expect(hash_of.(age: (is_a.(Integer) >> ->a { a + 2 })).(age: 12)).to eq({ age: 14 })
+      expect(hash_of.(age: (is_a.(Integer) >> ->a { a + 2 })).({})).to eq({})
       expect { hash_of.(age: (is_a.(Integer))).(age: "asdf") }.to raise_error(ValidatorFn::Error)
     end
 

@@ -62,11 +62,12 @@ module ValidatorFn
   @@is_a = ->klass, a { invalid.("Expected type #{klass}, got #{a.inspect}") unless a.is_a?(klass); a }.curry
   @@hash_of = ->fields, hash {
     hash ||= {}
-    fields.map do |(key, fn)|
-      [key, fn.(hash[key])]
+    fields.reduce({}) do |memo, (key, fn)|
+      memo[key] ||= fn.(hash[key]) if hash[key]
+      memo
     rescue Error => e
       invalid.("Invalid value for #{key.inspect} key.")
-    end.to_h
+    end
   }.curry
 
   @@handle_error = ->on_error, validator, value {
