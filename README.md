@@ -34,10 +34,10 @@ You can start validating type of an object.
 is_a.(String).(3)
 ```
 
-Note that parameters are curried. The first param of `is_a` is a Ruby class.
-This will raise an ValidatorFn::Error
+Note that parameters are curried. The first param of `is_a` is the Ruby class that you want to check the last parameter against.
+This will raise a `ValidatorFn::Error` expcetion
 
-However if you send a valid entry as the second parametee, it will return that last parameter.
+However if you send a valid entry as the second parameter, it will return that last parameter.
 
 ```
 is_a.(String).("Joe")
@@ -57,7 +57,7 @@ to_int.("asdf") # will raise an exception
 You can validate a hash:
 
 ```
-user = hash_of.({name: is_a.(String), age: is_a.(Integer)})
+user = hash_of.({name: is_a.(String), age: to_int})
 user.({name: "", age: "234"})
 ```
 
