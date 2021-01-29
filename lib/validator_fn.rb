@@ -56,7 +56,7 @@ module ValidatorFn
     end
   }.curry
   @@any = ->a { a }
-  @@is_nil = ->a { invalid.("Should be nil") unless a.nil?; a }
+  @@is_nil = ->a { invalid.("Should be nil but was #{a}") unless a.nil?; a }
   @@maybe = either.(is_nil)
   @@is_a = ->klass, a { invalid.("Expected type #{klass}, got #{a.inspect}") unless a.is_a?(klass); a }.curry
   @@hash_of = ->fields, hash {
