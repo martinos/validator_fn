@@ -92,7 +92,7 @@ module ValidatorFn
       "any"
     when Hash
       inner = a.map do |k, v|
-        %{"#{k}" => #{generate_validator.(v)}}
+        %{#{k.inspect} => #{generate_validator.(v)}}
       end.join(",\n  ")
       "hash_of.({ #{inner} })"
     when Array

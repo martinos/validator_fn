@@ -35,7 +35,7 @@ is_a.(String).(3)
 ```
 
 Note that parameters are curried. The first param of `is_a` is the Ruby class that you want to check the last parameter against.
-This will raise a `ValidatorFn::Error` expcetion
+In the previous example, aValidatorFn::Error`exception will be raised.
 
 However if you send a valid entry as the second parameter, it will return that last parameter.
 

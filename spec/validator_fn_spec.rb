@@ -72,10 +72,10 @@ RSpec.describe ValidatorFn do
 
       validate_code = generate_validator.(user)
       expected_code = <<EOF
-hash_of.({ "user" => hash_of.({ "name" => is_a.(String),
-  "age" => is_a.(Integer),
-  "friends" => array_of.( hash_of.({ "name" => is_a.(String),
-  "age" => is_a.(Integer) }) ) }) })
+hash_of.({ :user => hash_of.({ :name => is_a.(String),
+  :age => is_a.(Integer),
+  :friends => array_of.( hash_of.({ :name => is_a.(String),
+  :age => is_a.(Integer) }) ) }) })
 EOF
       expect(validate_code).to eq(expected_code.chomp)
       validate = eval(validate_code)
