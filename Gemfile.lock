@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    validator_fn (0.1.5)
+    validator_fn (0.1.6)
       fn_reader
 
 GEM
