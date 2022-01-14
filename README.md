@@ -4,6 +4,8 @@ ValidatorFn is a collection of very simple lambdas that can be used for validati
 data structures.  It makes use of currying in order to provide a very composable 
 DSL. To help you understand the concepts it is stongly advised to read [this blog post.](http://blog.martinosis.com/blog/simple-functional-strong-params-in-ruby/). 
 
+It can be very useful for validating structures that comes from input, such as configuration files, 
+JSON apis, test result. 
 
 ## Installation
 
