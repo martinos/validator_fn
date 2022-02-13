@@ -2,32 +2,8 @@ require "validator_fn/version"
 require "fn_reader"
 
 module ValidatorFn
-  class Error < StandardError; end
-
   fn_reader :something, :matches, :either, :array_of, :any, :is_nil,
-    :maybe, :present, :is_a, :int, :hash_of, :invalid, :generate_validator, :handle_error, :error_str, :apply
-
-  class Error < StandardError
-    attr_reader :my_msg
-
-    def initialize(msg)
-      @my_msg = msg
-      super(msg)
-    end
-
-    def message(indent = 0)
-      if cause
-        cause_msg = if cause.kind_of?(Error)
-            cause.message(indent + 1)
-          else
-            cause.message
-          end
-        my_msg + "\n" + ("  " * (indent + 1)) + cause_msg
-      else
-        my_msg
-      end
-    end
-  end
+    :maybe, :present, :is_a, :is_a_bool, :int, :hash_of, :invalid, :generate_validator, :handle_error, :error_str, :apply
 
   @@apply = ->fn, a {
     begin
@@ -59,6 +35,7 @@ module ValidatorFn
   @@is_nil = ->a { invalid.("Should be nil but was #{a}") unless a.nil?; a }
   @@maybe = either.(is_nil)
   @@is_a = ->klass, a { invalid.("Expected type #{klass}, got #{a.inspect}") unless a.is_a?(klass); a }.curry
+  @@is_a_bool = ->a { invalid.("Expected bool, got #{a.inspect}") unless a == true || a == false; a }.curry
   @@hash_of = ->fields, hash {
     hash ||= {}
     fields.reduce({}) do |memo, (key, fn)|
@@ -97,6 +74,10 @@ module ValidatorFn
       "hash_of.({ #{inner} })"
     when Array
       "array_of.( #{generate_validator.(a.first)} )"
+    when TrueClass
+      "is_a_bool"
+    when FalseClass
+      "is_a_bool"
     else
       "is_a.(#{a.class})"
     end

@@ -17,6 +17,17 @@ RSpec.describe ValidatorFn do
       expect(any.(nil)).to eq nil
     end
 
+    it "validates it is of a certain class" do
+      expect(is_a.(String).("air")).to eq "air"
+      expect { is_a.(String).(23) }.to raise_error(ValidatorFn::Error)
+    end
+
+    it "validates that it is a bool" do
+      expect(is_a_bool.(true)).to eq true
+      expect(is_a_bool.(false)).to eq false
+      expect { is_a_bool.("sdf") }.to raise_error(ValidatorFn::Error)
+    end
+
     it "validates maybe" do
       expect(maybe.(is_a.(String)).("")).to eq ""
       expect(maybe.(is_a.(String)).(nil)).to eq nil

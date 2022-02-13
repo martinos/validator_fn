@@ -1,11 +1,11 @@
 # ValidatorFn
 
-ValidatorFn is a collection of very simple lambdas that can be used for validating/transforming 
-data structures.  It makes use of currying in order to provide a very composable 
-DSL. To help you understand the concepts it is stongly advised to read [this blog post.](http://blog.martinosis.com/blog/simple-functional-strong-params-in-ruby/). 
+ValidatorFn is a collection of very simple lambdas that can be used for validating/transforming
+data structures. It makes use of currying in order to provide a very composable
+DSL. To help you understand the concepts it is stongly advised to read [this blog post.](http://blog.martinosis.com/blog/simple-functional-strong-params-in-ruby/).
 
-It can be very useful for validating structures that comes from input, such as configuration files, 
-JSON apis, test result. 
+It can be very useful for validating structures that comes from input, such as configuration files,
+JSON apis, test result.
 
 ## Installation
 
@@ -30,7 +30,7 @@ require 'validator_fn'
 include ValidatorFn
 ```
 
-You can start validating type of an object. 
+You can start validating type of an object.
 
 ```
 is_a.(String).(3)
@@ -63,20 +63,87 @@ user = hash_of.({name: is_a.(String), age: to_int})
 user.({name: "", age: "234"})
 ```
 
-Since we are using curried lambdas, you can compose validators as you which. 
+Since we are using curried lambdas, you can compose validators as you which.
 
 ```
-postal_code = -> a { 
+postal_code = -> a {
   invalid.("Invalid postal code: #{a}")  unless a =~ /[a-z]\d[a-z]\s*\d[a-z]\d/i
   a
 }
-contact =  hash_of.(user: user, 
-                    address: hash_of.({ street_number: is_a.(Integer), 
+contact =  hash_of.(user: user,
+                    address: hash_of.({ street_number: is_a.(Integer),
                                         postal_code: postal_code}))
 ```
 
 This is a very simple library (100 lines of code) that can be extended as you which by
 creating your own lambdas.
+
+## Casting
+
+You can also apply converter functions to the structure.
+
+```ruby
+user = { name: "Joe", created_at: "2020-01-03" }
+to_date = ->str { Date.parse(str) }
+user_validator = hash_of.(name: is_a.(String),
+                          created_at: is_a.(String) >> to_date)
+
+user_validator.(user)
+# => {:name=>"Joe", :created_at=>#<Date: 2020-01-03 ((2458852j,0s,0n),+0s,2299161j)>}
+```
+
+This makes it very useful processing JSON payloads.
+
+## Code generation
+
+You can generate validator code from existing structure:
+
+```
+require 'openuri'
+require "json"
+struct = JSON.parse(URI.open("https://api.github.com/users/defunkt").read)
+
+require_relative "validator_fn"
+
+# Generate unformatted code
+code = ValidatorFn.generate_validator.(struct)
+
+# You can reformat it using a code formatter
+require "rufo"
+puts Rufo.format(code)
+hash_of.({ "login" => is_a.(String),
+           "id" => is_a.(Integer),
+           "node_id" => is_a.(String),
+           "avatar_url" => is_a.(String),
+           "gravatar_id" => is_a.(String),
+           "url" => is_a.(String),
+           "html_url" => is_a.(String),
+           "followers_url" => is_a.(String),
+           "following_url" => is_a.(String),
+           "gists_url" => is_a.(String),
+           "starred_url" => is_a.(String),
+           "subscriptions_url" => is_a.(String),
+           "organizations_url" => is_a.(String),
+           "repos_url" => is_a.(String),
+           "events_url" => is_a.(String),
+           "received_events_url" => is_a.(String),
+           "type" => is_a.(String),
+           "site_admin" => is_a_bool,
+           "name" => is_a.(String),
+           "company" => any,
+           "blog" => is_a.(String),
+           "location" => any,
+           "email" => any,
+           "hireable" => any,
+           "bio" => is_a.(String),
+           "twitter_username" => any,
+           "public_repos" => is_a.(Integer),
+           "public_gists" => is_a.(Integer),
+           "followers" => is_a.(Integer),
+           "following" => is_a.(Integer),
+           "created_at" => is_a.(String),
+           "updated_at" => is_a.(String) })
+```
 
 ## Development
 
@@ -88,14 +155,11 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/validator_fn. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/validator_fn/blob/master/CODE_OF_CONDUCT.md).
 
-
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Code of Conduct
 
-Everyone interacting in the ValidatorFn project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/validator_fn/blob/master/CODE_OF_CONDUCT.md).
-Everyone interacting in the ValidatorFn project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/validator_fn/blob/master/CODE_OF_CONDUCT.md).
 Everyone interacting in the ValidatorFn project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/validator_fn/blob/master/CODE_OF_CONDUCT.md).
 Everyone interacting in the ValidatorFn project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/validator_fn/blob/master/CODE_OF_CONDUCT.md).
