@@ -1,11 +1,10 @@
 # ValidatorFn
 
 ValidatorFn is a collection of very simple lambdas that can be used for validating/transforming
-data structures. It makes use of currying in order to provide a very composable
-DSL. To help you understand the concepts it is stongly advised to read [this blog post.](http://blog.martinosis.com/blog/simple-functional-strong-params-in-ruby/).
+data structures. It makes use of currying to provide a very composable
+DSL. To help you understand the concepts, I strongly advise reading [this blog post.](http://blog.martinosis.com/blog/simple-functional-strong-params-in-ruby/).
 
-It can be very useful for validating structures that comes from input, such as configuration files,
-JSON apis, test result.
+It can be very useful for validating structures that come from input, such as configuration files, JSON APIs, test results.
 
 ## Installation
 
@@ -30,16 +29,16 @@ require 'validator_fn'
 include ValidatorFn
 ```
 
-You can start validating type of an object.
+You can start validating the type of an object.
 
 ```
 is_a.(String).(3)
 ```
 
-Note that parameters are curried. The first param of `is_a` is the Ruby class that you want to check the last parameter against.
-In the previous example, aValidatorFn::Error`exception will be raised.
+Note that parameters are curried. The first param of `is_a` is the Ruby class you want to check the last parameter against.
+In the previous example, a `ValidatorFn::Error`exception will be raised.
 
-However if you send a valid entry as the second parameter, it will return that last parameter.
+However, setting a valid entry as the second parameter will return that last parameter.
 
 ```
 is_a.(String).("Joe")
@@ -75,8 +74,7 @@ contact =  hash_of.(user: user,
                                         postal_code: postal_code}))
 ```
 
-This is a very simple library (100 lines of code) that can be extended as you which by
-creating your own lambdas.
+This very simple library (100 lines of code) can be extended easily by creating new lambdas.
 
 ## Casting
 
@@ -92,7 +90,7 @@ user_validator.(user)
 # => {:name=>"Joe", :created_at=>#<Date: 2020-01-03 ((2458852j,0s,0n),+0s,2299161j)>}
 ```
 
-This makes it very useful processing JSON payloads.
+This makes it very useful for processing JSON payloads.
 
 ## Code generation
 
@@ -161,5 +159,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the ValidatorFn project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/validator_fn/blob/master/CODE_OF_CONDUCT.md).
 Everyone interacting in the ValidatorFn project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/validator_fn/blob/master/CODE_OF_CONDUCT.md).
