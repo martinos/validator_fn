@@ -103,7 +103,7 @@ require 'openuri'
 require "json"
 struct = JSON.parse(URI.open("https://api.github.com/users/defunkt").read)
 
-require_relative "validator_fn"
+require "validator_fn"
 
 # Generate unformatted code
 code = ValidatorFn.generate_validator.(struct)
