@@ -1,4 +1,5 @@
 require "validator_fn/version"
+require "validator_fn/error"
 require "fn_reader"
 
 module ValidatorFn
