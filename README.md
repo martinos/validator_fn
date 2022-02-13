@@ -24,14 +24,14 @@ Or install it yourself as:
 
 ## Usage
 
-```
+```ruby
 require 'validator_fn'
 include ValidatorFn
 ```
 
 You can start validating the type of an object.
 
-```
+```ruby
 is_a.(String).(3)
 ```
 
@@ -40,14 +40,14 @@ In the previous example, a `ValidatorFn::Error`exception will be raised.
 
 However, setting a valid entry as the second parameter will return that last parameter.
 
-```
+```ruby
 is_a.(String).("Joe")
 # => "Joe"
 ```
 
 This allows chaining lambdas:
 
-```
+```ruby
 to_int = is_a.(String) >> -> a { Integer(a) }
 
 to_int.("12")
@@ -57,14 +57,14 @@ to_int.("asdf") # will raise an exception
 
 You can validate a hash:
 
-```
+```ruby
 user = hash_of.({name: is_a.(String), age: to_int})
 user.({name: "", age: "234"})
 ```
 
 Since we are using curried lambdas, you can compose validators as you which.
 
-```
+```ruby
 postal_code = -> a {
   invalid.("Invalid postal code: #{a}")  unless a =~ /[a-z]\d[a-z]\s*\d[a-z]\d/i
   a
@@ -96,7 +96,7 @@ This makes it very useful for processing JSON payloads.
 
 You can generate validator code from existing structure:
 
-```
+```ruby
 require 'openuri'
 require "json"
 struct = JSON.parse(URI.open("https://api.github.com/users/defunkt").read)
