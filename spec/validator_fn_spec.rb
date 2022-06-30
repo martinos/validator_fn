@@ -34,12 +34,34 @@ RSpec.describe ValidatorFn do
       expect { maybe.(is_a.(String)).(12) }.to raise_error(ValidatorFn::Error)
     end
 
-    it "validates a hash" do
-      expect(hash_of.(age: (is_a.(Integer))).(age: 12)).to eq({ age: 12 })
-      # We should be able to apply a transformation on the value
-      expect(hash_of.(age: (is_a.(Integer) >> ->a { a + 2 })).(age: 12)).to eq({ age: 14 })
-      expect { hash_of.(age: (is_a.(Integer))).(age: "asdf") }.to raise_error(ValidatorFn::Error)
-      expect { hash_of.(unexisting_key: (is_a.(Integer))).(age: "asdf") }.to raise_error(ValidatorFn::Error)
+    context "hash_of" do
+      it "test for valid field" do
+        expect(hash_of.(age: (is_a.(Integer))).(age: 12)).to eq({ age: 12 })
+      end
+
+      it "raises an exception for invalid field" do
+        expect { hash_of.(age: (is_a.(Integer))).(age: "asdf") }.to raise_error(ValidatorFn::Error)
+      end
+
+      it "can apply a conversion" do
+        # We should be able to apply a transformation on the value
+        expect(hash_of.(age: (is_a.(Integer) >> ->a { a + 2 })).(age: 12)).to eq({ age: 14 })
+      end
+
+      it "raises an error if field is not present" do
+        expect { hash_of.(unexisting_key: (is_a.(Integer))).(age: "asdf") }.to raise_error(ValidatorFn::Error)
+      end
+
+      it "doesn't raise an error if a key is absent and the value is tested for nility" do
+        # we are not discrimining between a missing key and a field with nil value
+        # Becasue the fn  passed passed to the hash defn is only applied to the value
+        # Thus we cannot have a way to discriminate between absent field and nil field
+        expect(hash_of.(unexisting_key: is_nil).(age: 12)).to eq({ unexisting_key: nil })
+      end
+
+      it "filters out field that where not defined" do
+        expect(hash_of.(age: is_a.(Integer)).(age: 12, name: "Joe")).to eq({ age: 12 })
+      end
     end
 
     it "validates an array" do
