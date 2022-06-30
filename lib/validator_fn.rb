@@ -40,8 +40,15 @@ module ValidatorFn
   @@hash_of = ->fields, hash {
     hash ||= {}
     fields.reduce({}) do |memo, (key, fn)|
-      memo[key] ||= fn.(hash[key]) if hash[key]
+      value = hash.fetch(key, :missing_field)
+      if value == :missing_field
+        raise MissingKey.new(key)
+      else
+        memo[key] = fn.(hash[key]) if hash[key]
+      end
       memo
+    rescue MissingKey => e
+      raise
     rescue Error => e
       invalid.("Invalid value for #{key.inspect} key.")
     end

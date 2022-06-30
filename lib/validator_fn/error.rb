@@ -20,4 +20,10 @@ module ValidatorFn
       end
     end
   end
+
+  class MissingKey < Error
+    def initialize(key)
+      super("Missing field #{key}")
+    end
+  end
 end
