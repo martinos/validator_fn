@@ -37,6 +37,8 @@ module ValidatorFn
   @@maybe = either.(is_nil)
   @@is_a = ->klass, a { invalid.("Expected type #{klass}, got #{a.inspect}") unless a.is_a?(klass); a }.curry
   @@is_a_bool = ->a { invalid.("Expected bool, got #{a.inspect}") unless a == true || a == false; a }.curry
+  # it validates each fields according with a specific algorithm, note that it
+  # will filter out fields that are not defined
   @@hash_of = ->fields, hash {
     hash ||= {}
     fields.reduce({}) do |memo, (key, fn)|
