@@ -62,7 +62,7 @@ user = hash_of.({name: is_a.(String), age: to_int})
 user.({name: "", age: "234"})
 ```
 
-Since we are using curried lambdas, you can compose validators as you which.
+Since we are using curried lambdas, you can compose validators as you wish.
 
 ```ruby
 postal_code = -> a {
