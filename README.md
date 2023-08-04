@@ -62,7 +62,7 @@ user = hash_of.({name: is_a.(String), age: to_int})
 user.({name: "", age: "234"})
 ```
 
-Since we are using curried lambdas, you can compose validators as you which.
+Since we are using curried lambdas, you can compose validators as you wish.
 
 ```ruby
 postal_code = -> a {
@@ -109,6 +109,9 @@ code = ValidatorFn.generate_validator.(struct)
 # You can reformat it using a code formatter
 require "rufo"
 puts Rufo.format(code)
+```
+The output
+```
 hash_of.({ "login" => is_a.(String),
            "id" => is_a.(Integer),
            "node_id" => is_a.(String),
