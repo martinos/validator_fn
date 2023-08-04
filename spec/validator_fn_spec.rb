@@ -52,11 +52,8 @@ RSpec.describe ValidatorFn do
         expect { hash_of.(unexisting_key: (is_a.(Integer))).(age: "asdf") }.to raise_error(ValidatorFn::Error)
       end
 
-      it "doesn't raise an error if a key is absent and the value is tested for nility" do
-        # we are not discrimining between a missing key and a field with nil value
-        # Because the fn passed passed to the hash defn is only applied to the value
-        # Thus we cannot have a way to discriminate between absent field and nil field
-        expect(hash_of.(unexisting_key: is_nil).(age: 12)).to eq({ unexisting_key: nil })
+      it "raises an error if a key is absent and the value is tested for nility" do
+        expect { hash_of.(unexisting_key: is_nil).(age: 12) }.to raise_error(ValidatorFn::Error)
       end
 
       it "tests if a field is missing" do

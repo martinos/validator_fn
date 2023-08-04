@@ -23,7 +23,7 @@ module ValidatorFn
 
   class MissingKey < Error
     def initialize(key)
-      super("Missing field #{key}")
+      super("Missing field #{key.inspect}")
     end
   end
 end
