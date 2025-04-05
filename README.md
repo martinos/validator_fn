@@ -97,7 +97,7 @@ This makes it very useful for processing JSON payloads.
 You can generate validator code from existing structure:
 
 ```ruby
-require 'openuri'
+require 'open-uri'
 require "json"
 struct = JSON.parse(URI.open("https://api.github.com/users/defunkt").read)
 
