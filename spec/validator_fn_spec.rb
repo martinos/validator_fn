@@ -34,6 +34,11 @@ RSpec.describe ValidatorFn do
       expect { maybe.(is_a.(String)).(12) }.to raise_error(ValidatorFn::Error)
     end
 
+    it "validates any_of" do
+      expect(enum_of.([1, 2, 3]).(2)).to eq 2
+      expect { enum_of.([1, 2, 3]).(4) }.to raise_error(ValidatorFn::Error)
+    end
+
     context "hash_of" do
       it "test for valid field" do
         expect(hash_of.(age: (is_a.(Integer))).(age: 12)).to eq({ age: 12 })

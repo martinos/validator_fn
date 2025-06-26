@@ -4,7 +4,7 @@ require "fn_reader"
 
 module ValidatorFn
   fn_reader :something, :matches, :either, :array_of, :any, :is_nil,
-    :maybe, :present, :is_a, :is_a_bool, :int, :hash_of, :invalid, :generate_validator, :handle_error, :error_str, :apply
+    :maybe, :present, :is_a, :is_a_bool, :int, :hash_of, :invalid, :generate_validator, :handle_error, :error_str, :apply, :enum_of
 
   @@apply = ->fn, a {
     begin
@@ -23,6 +23,10 @@ module ValidatorFn
       b.(value)
     end
     value
+  }.curry
+  @@enum_of = ->enum, a {
+    raise Error.new("Should be in #{enum.join(",")}") unless enum.include?(a)
+    a
   }.curry
   @@array_of = ->fn, array {
     is_a.(Array).(array)
