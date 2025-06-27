@@ -119,5 +119,36 @@ EOF
       expect(validate_code).to eq(expected_code.chomp)
       validate = eval(validate_code)
     end
+
+    it "context method allows using ValidatorFn methods directly" do
+      result = ValidatorFn.context do
+        # Should be able to use ValidatorFn methods directly without module prefix
+        value = something.("test")
+        validated_hash = hash_of.({ name: is_a.(String), age: is_a.(Integer) }).({ name: "John", age: 30 })
+        [value, validated_hash]
+      end
+
+      expect(result[0]).to eq("test")
+      expect(result[1]).to eq({ name: "John", age: 30 })
+    end
+
+    it "context method provides isolated environment" do
+      # Create a clean object to test isolation
+      test_obj = Object.new
+
+      # Verify method is not available on clean object
+      expect { test_obj.something.("test") }.to raise_error(NoMethodError)
+
+      # Use context and verify it works within the context
+      result = ValidatorFn.context do
+        # Inside context, ValidatorFn methods should be available
+        something.("test")
+      end
+
+      expect(result).to eq("test")
+
+      # Verify method is still not available on clean object after context
+      expect { test_obj.something.("test") }.to raise_error(NoMethodError)
+    end
   end
 end

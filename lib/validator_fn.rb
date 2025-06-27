@@ -4,7 +4,13 @@ require "fn_reader"
 
 module ValidatorFn
   fn_reader :something, :matches, :either, :array_of, :any, :is_nil,
-    :maybe, :present, :is_a, :is_a_bool, :int, :hash_of, :invalid, :generate_validator, :handle_error, :error_str, :apply, :enum_of
+    :maybe, :present, :is_a, :is_a_bool, :int, :hash_of, :invalid, :generate_validator, :handle_error, :error_str, :apply, :enum_of, :context
+
+  def self.context(&caller)
+    extended = Object.new
+    extended.extend ValidatorFn
+    extended.instance_eval(&caller)
+  end
 
   @@apply = ->fn, a {
     begin
